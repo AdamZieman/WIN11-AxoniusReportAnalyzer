@@ -2,42 +2,61 @@
 setlocal enabledelayedexpansion
 
 
+REM Instatiate a working absolute Path
+set workingAbsolutePath=''
+
+
 REM Instantiate the path to the parent directory for the Axonius reports
 set "axoniusReportsPath=C:\Users\d18284\LocalDocuments\Projects\WIN11\AxoniusReports\"
-if not exist "%axoniusReportsPath%" (
+set workingAbsolutePath=!axoniusReportsPath!
+if not exist "%workingAbsolutePath%" (
     echo Error: Path does not exist.
     echo %axoniusReportsPath%
 	
-    goto :End
+    goto :EndError
 )
 
 
-REM Instantiate the directory of the specific Axonius reports
-set "targetedReportDirectory=Axonius Report 2024_11_26\"
-if not exist "%axoniusReportsPath%\%targetedReportDirectory%" (
-    echo Error: Directory does not exist.
-    echo %targetedReportDirectory%
-	
-    goto :End
+REM Function to get the date for the Axonius report
+:GetAxoniusReportDate
+
+
+REM Get the date of the Axonius report from the user
+set /p axoniusReportDate="Enter the date of the Axonius report in YYYY_MM_DD format: "
+
+
+REM Instantiate the Axonius report directory
+set "targetedReportDirectory=Axonius Report !axoniusReportDate!\"
+set set workingAbsolutePath=!axoniusReportsPath!!targetedReportDirectory!
+
+
+REM Check if the required files exist
+if not exist !workingAbsolutePath! (
+	echo Error: Directory does not exist.
+	echo %targetedReportDirectory%
+	echo.
+	echo Absolute path: !workingAbsolutePath!
+	echo.
+	goto :GetAxoniusReportDate
 )
 
 
 REM Instantiate the csv Axonius report
-set "targetedCSV=Windows 11 Not Compatible Apps and Hardware - Field Services_2024-11-26T08-53-59UTC.csv"
-if not exist "%axoniusReportsPath%\%targetedReportDirectory%\%targetedCSV%" (
+set "targetedCSV=Windows 11 Not Compatible Apps and Hardware*"
+set workingAbsolutePath=!axoniusReportsPath!!targetedReportDirectory!!targetedCSV!
+if not exist "%workingAbsolutePath%" (
     echo Error: File does not exist.
-    echo %targetedCSV%
+	echo %targetedCSV%
+	echo.
+	echo Absolute path: !workingAbsolutePath!
+    echo .
 	
-    goto :End
+    goto :EndError
 )
 
 
 REM Instantiate the column to search in the csv file
-set "targetedColumn=Sccm: Collections"
-
-
-REM Path to the Axonius report
-set csvPath=%axoniusReportsPath%%targetedReportDirectory%%targetedCSV%
+set "targetedColumn=Sccm: Collections"=
 
 
 REM Prints which Axonius directory and file is being searched
@@ -65,7 +84,7 @@ echo ... Extracting data
 
 
 REM PowerShell command to extract values from the targeted column
-powershell -Command "Import-Csv -Path '%csvPath%' | Select-Object -Unique -ExpandProperty '%targetedColumn%' | Out-File -FilePath '%NonCompatibleFile%' -Encoding utf8"
+powershell -Command "Import-Csv -Path '%workingAbsolutePath%' | Select-Object -Unique -ExpandProperty '%targetedColumn%' | Out-File -FilePath '%NonCompatibleFile%' -Encoding utf8"
 
 
 REM Prints that the script will begin removing duplicate entries
@@ -136,7 +155,7 @@ if /i "!isCompareFile!"=="y" (
     if not exist "!previousOutputsPath!" (
         echo Error: Path does not exist.
         echo "!previousOutputsPath!"
-        goto :End
+        goto :EndError
     )
     
     REM Instantiate the date of the previous report you would like to compare
@@ -171,7 +190,7 @@ if /i "!isCompareFile!"=="y" (
     start notepad "!DifferencesFile!"
 
 ) else if /i "!isCompareFile!"=="n" (
-    goto :End
+    goto :EndSuccess
 ) else (
     echo Error: Invalid input.
 	echo.
@@ -179,12 +198,19 @@ if /i "!isCompareFile!"=="y" (
 )
 
 
-REM End of File
-:End
+REM End with success
+:EndSuccess
 echo.
+
 
 REM Opens the output files
 start notepad %SortedUniqueNonCompatibleComputersFile%
 start notepad %SortedUniqueNonCompatibleAppsFile%
 
+endlocal
+
+
+REM End with error
+:EndError
+echo.
 endlocal
