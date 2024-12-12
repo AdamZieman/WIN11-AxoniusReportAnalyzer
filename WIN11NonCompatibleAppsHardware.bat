@@ -65,7 +65,7 @@ for /f "usebackq delims=" %%A in (!tempSccmCollectionsFile!) do (
     set line=%%A
 
     for /f "tokens=* delims=" %%B in ("!line!") do set "line=%%B"
-		echo !line! | findstr /b /i "Dell HP" >nul
+		echo !line! | findstr /b /i "Dell HP Lenovo" >nul
 		
 		if !errorlevel! equ 0 (
 			findstr /x /c:"!line!" !tempIncompatibleHardwareFile! >nul
@@ -129,15 +129,15 @@ if /i "!isCompareFile!"=="y" (
     
     set /p compareDate="Enter the date of the file you would like to compare in YYYY_MM_DD format: "
 
-    if not exist "!previousAxoniusReportOutputs!\incompatibleSoftware!compareDate!.txt" (
+    if not exist "!previousAxoniusReportOutputs!\!compareDate!incompatibleSoftware.txt" (
 		echo Error: Previous incompatible software file does not exist.
-        echo "!previousAxoniusReportOutputs!\incompatibleSoftware!compareDate!.txt"
+        echo "!previousAxoniusReportOutputs!\!compareDate!incompatibleSoftware.txt"
         goto :CompareFile
     )
     
-    if not exist "!previousAxoniusReportOutputs!\incompatibleHardware!compareDate!.txt" (
+    if not exist "!previousAxoniusReportOutputs!\!compareDate!incompatibleHardware.txt" (
 		echo Error: Previous incompatible hardware file does not exist.
-        echo "!previousAxoniusReportOutputs!\incompatibleHardware!compareDate!.txt"
+        echo "!previousAxoniusReportOutputs!\!compareDate!incompatibleHardware.txt"
         goto :CompareFile
     )
     
@@ -146,8 +146,8 @@ if /i "!isCompareFile!"=="y" (
 	
     echo ... Comparing reports
 	
-    fc "!incompatibleSoftwareFile!" "!previousAxoniusReportOutputs!\incompatibleSoftware!compareDate!.txt" >> "!differencesFile!" 2>&1
-    fc "!incompatibleHardwareFile!" "!previousAxoniusReportOutputs!\incompatibleHardware!compareDate!.txt" >> "!differencesFile!" 2>&1
+    fc "!incompatibleSoftwareFile!" "!previousAxoniusReportOutputs!\!compareDate!incompatibleSoftware.txt" >> "!differencesFile!" 2>&1
+    fc "!incompatibleHardwareFile!" "!previousAxoniusReportOutputs!\!compareDate!incompatibleHardware.txt" >> "!differencesFile!" 2>&1
 	
     start notepad "!differencesFile!"
 	
@@ -162,10 +162,12 @@ if /i "!isCompareFile!"=="y" (
 
 
 REM This section handles the exit points for the script.
-REM If the script successfully completes, it opens the incompatible hardware and software files in Notepad and then ends the local environment.
+REM If the script successfully completes, copies the current incompatible hardware and software files to the directory for previous outputs, opens the incompatible hardware and software files in Notepad and then ends the local environment.
 REM If an error occurs, it simply ends the local environment.
 
 :ExitOnSuccess
+xcopy /C /-I /Q /Y !incompatibleHardwareFile! !previousAxoniusReportOutputs!\!reportDate!incompatibleHardware.txt >nul
+xcopy /C /-I /Q /Y !incompatibleSoftwareFile! !previousAxoniusReportOutputs!\!reportDate!incompatibleSoftware.txt >nul
 start notepad !incompatibleHardwareFile!
 start notepad !incompatibleSoftwareFile!
 endlocal
