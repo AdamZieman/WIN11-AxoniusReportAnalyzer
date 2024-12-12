@@ -34,7 +34,7 @@ C:\Users\d18284\LocalDocuments\Projects\WIN11\
 3. **Sorting and Output**
    - Sorts the classified data alphanumerically.
    - Saves the sorted results to `incompatibleHardware.txt` and `incompatibleSoftware.txt`.
-   - Stores the output files in the `PreviousOutputs\` directory for future comparisons.
+   - Creates a copy of the output files in the `PreviousOutputs\` directory for future comparisons.
 
 4. **Comparison (Optional)**
    - Prompts the user to compare the current report with a previous report.
