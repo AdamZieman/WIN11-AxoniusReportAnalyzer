@@ -166,8 +166,8 @@ REM If the script successfully completes, copies the current incompatible hardwa
 REM If an error occurs, it simply ends the local environment.
 
 :ExitOnSuccess
-xcopy /C /-I /Q /Y !incompatibleHardwareFile! !previousAxoniusReportOutputs!\!reportDate!incompatibleHardware.txt >nul
-xcopy /C /-I /Q /Y !incompatibleSoftwareFile! !previousAxoniusReportOutputs!\!reportDate!incompatibleSoftware.txt >nul
+xcopy !incompatibleHardwareFile! !previousAxoniusReportOutputs!\!reportDate!incompatibleHardware.txt /C /-I /Q /Y >nul
+xcopy !incompatibleSoftwareFile! !previousAxoniusReportOutputs!\!reportDate!incompatibleSoftware.txt /C /-I /Q /Y >nul
 start notepad !incompatibleHardwareFile!
 start notepad !incompatibleSoftwareFile!
 endlocal
