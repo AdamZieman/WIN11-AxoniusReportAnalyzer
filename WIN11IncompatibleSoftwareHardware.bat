@@ -149,6 +149,9 @@ if /i "!isCompareFile!"=="y" (
     fc "!incompatibleSoftwareFile!" "!previousAxoniusReportOutputs!\!compareDate!incompatibleSoftware.txt" >> "!differencesFile!" 2>&1
     fc "!incompatibleHardwareFile!" "!previousAxoniusReportOutputs!\!compareDate!incompatibleHardware.txt" >> "!differencesFile!" 2>&1
 	
+	echo ... Completed
+	echo !differencesFile!
+	
     start notepad "!differencesFile!"
 	
 	goto :ExitOnSuccess
