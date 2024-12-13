@@ -3,8 +3,11 @@
 ## Overview
 This script processes Axonius reports for Windows 11 compatibility, extracting and organizing information on incompatible hardware and software. It also facilitates comparison between current and previous reports to identify changes over time.
 
-![image](https://github.com/user-attachments/assets/f045c2da-2631-4803-a867-0a23eaca5c6c)
+## Images
 
+![image](https://github.com/user-attachments/assets/b3526626-b069-4e6a-8e4d-8f7d4dbd4e10)
+
+![image](https://github.com/user-attachments/assets/f045c2da-2631-4803-a867-0a23eaca5c6c)
 
 ## Directory Structure
 The script assumes the following directory structure:
