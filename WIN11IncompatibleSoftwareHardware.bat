@@ -103,8 +103,8 @@ del !tempIncompatibleSoftwareFile!
 del !tempIncompatibleHardwareFile!
 
 echo ... Completed
-echo !parentDirectory!!incompatibleHardwareFile!
-echo !parentDirectory!!incompatibleSoftwareFile!
+echo !incompatibleHardwareFile!
+echo !incompatibleSoftwareFile!
 
 
 
@@ -141,7 +141,7 @@ if /i "!isCompareFile!"=="y" (
         goto :CompareFile
     )
     
-    set "differencesFile=!parentDirectory!\differences.txt"
+    set "differencesFile=!parentDirectory!differences.txt"
 	> !differencesFile! echo.
 	
     echo ... Comparing reports
